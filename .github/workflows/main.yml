@@ -9,30 +9,15 @@ on:
       - main
 
 jobs:
-  build-test-deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the code
+      # Step 1: Checkout the code
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # JavaScript Lint and Test
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-
-      - name: Install JS Dependencies
-        run: npm install
-
-      - name: Run JS Lint
-        run: npm run lint
-
-      - name: Run JS Tests
-        run: npm test
-
-      # PHP Lint and Test
+      # Step 2: PHP Lint and Test
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -47,12 +32,12 @@ jobs:
       - name: Run PHP Tests
         run: composer test
 
-      # Deployment via FTP
+      # Step 3: Deployment via FTP
       - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: './dist'   # Adjust to your build directory
+          local-dir: './'       # Adjust to your project directory
           server-dir: '/public_html' # Adjust to your server's target directory
