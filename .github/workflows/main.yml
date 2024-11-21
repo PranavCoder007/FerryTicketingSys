@@ -21,8 +21,8 @@ jobs:
       - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.0
         with:
-          server: ${{ secrets.FTP_SERVER }}    # FTP server address
-          username: ${{ secrets.FTP_USERNAME }} # FTP username
-          password: ${{ secrets.FTP_PASSWORD }} # FTP password
-          local-dir: './'                       # Adjust to your project directory
-          server-dir: '/public_html'            # Adjust to your server's target directory
+          server: '127.0.0.1'                    # Use 'localhost' or '127.0.0.1' for local access
+          username: ${{ secrets.FTP_USERNAME }}  # Your FTP username (from FileZilla)
+          password: ${{ secrets.FTP_PASSWORD }}  # Your FTP password (from FileZilla)
+          local-dir: './'                        # Local directory of your project
+          server-dir: '/htdocs'                  # Remote directory on your server (e.g., XAMPP's 'htdocs')
