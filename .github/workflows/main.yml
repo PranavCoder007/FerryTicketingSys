@@ -19,7 +19,7 @@ jobs:
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
       with:
         server: ${{ secrets.FTP_HOST }}  # FTP server IP or domain
-        username: ${{ secrets.FTP_USER }}  # FTP username
+        username: ${{ secrets.FTP_USERNAME }}  # FTP username
         password: ${{ secrets.FTP_PASSWORD }}  # FTP password
         port: 21   # FTP port (can be 21 or whatever your FTP server is using)
         protocol: ftp  # FTP protocol
