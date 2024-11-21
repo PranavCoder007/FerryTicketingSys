@@ -19,30 +19,8 @@ jobs:
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
       with:
         server: ${{ secrets.FTP_HOST }} # FTP server (e.g., 127.0.0.1 or your public IP)
-        username: ${{ secrets.name: CI/CD for XAMPP via FTP
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-    # Step 1: Checkout Code
-    - name: Checkout Code
-      uses: actions/checkout@v3
-
-    # Step 2: Deploy via FTP
-    - name: Deploy to XAMPP via FTP
-      uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      with:
-        server: ${{ secrets.FTP_HOST }} # FTP server (e.g., 127.0.0.1 or your public IP)
         username: ${{ secrets.FTP_USERNAME }} # FTP username
         password: ${{ secrets.FTP_PASSWORD }} # FTP password
         local-dir: "./" # Path to project files (default: current directory)
         server-dir: "/path/to/xampp/htdocs" # Target directory on your XAMPP server
         protocol: "ftp" # Protocol to use (ftp, ftps, sftp)
- }} # FTP username
