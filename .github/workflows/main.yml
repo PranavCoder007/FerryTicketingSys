@@ -1,37 +1,41 @@
 name: Deploy to XAMPP FTP Server
-
 on:
   push:
     branches:
       - main   # Trigger on push to the main branch
-
 jobs:
   deploy:
     runs-on: ubuntu-latest   # Runs on Ubuntu virtual machine
-
     steps:
     # Step 1: Checkout the code from the repository
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 2  # Fetch last 2 commits for efficient deployment
 
-    # Step 2: Setup FTP deploy action
+    # Step 2: Setup FTP deploy action with enhanced configuration
     - name: FTP Deploy
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
       with:
         server: ${{ secrets.FTP_HOST }}  # FTP server IP or domain
         username: ${{ secrets.FTP_USERNAME }}  # FTP username
         password: ${{ secrets.FTP_PASSWORD }}  # FTP password
-        port: 21   # FTP port (can be 21 or whatever your FTP server is using)
-        protocol: ftp  # FTP protocol
-        local-dir: ./   # Local directory to deploy (can be './' for root project folder)
-        server-dir: /path/to/your/htdocs/  # Directory on your XAMPP FTP server
-        # Optional: Uncomment if you want to use passive FTP mode
-        # passive: true
+        port: 21   # FTP port
+        protocol: ftp
+        local-dir: ./   # Local directory to deploy
+        server-dir: /path/to/your/htdocs/  # Directory on XAMPP FTP server
+        
+        # Enhanced timeout and retry configurations
+        timeout: 120000  # 2-minute timeout (in milliseconds)
+        max-retries: 3   # Retry up to 3 times
+        passive: true    # Use passive FTP mode
+        log-level: detailed  # Verbose logging for troubleshooting
 
-    # Step 3: (Optional) Clear out the server files before deploying (use carefully)
-    # - name: Clean up old files
-    #   run: ssh -o StrictHostKeyChecking=no ${{ secrets.FTP_USER }}@${{ secrets.FTP_HOST }} "rm -rf /path/to/your/htdocs/*"
-
-    # Step 4: Confirm deployment success
+    # Step 3: Deployment success confirmation
     - name: Deployment Success
       run: echo "Deployment completed successfully!"
+
+    # Step 4: Error handling
+    - name: Deployment Failure Notification
+      if: failure()
+      run: echo "Deployment failed. Check logs for details."
