@@ -22,7 +22,7 @@ jobs:
         uses: SamKirkland/FTP-Deploy-Action@v4.3.0
         with:
           server: '127.0.0.1'                    # Use 'localhost' or '127.0.0.1' for local access
-          username: ${{ secrets.FTP_USERNAME }}  # Your FTP username (from FileZilla)
-          password: ${{ secrets.FTP_PASSWORD }}  # Your FTP password (from FileZilla)
+          username: ${{ secrets.FTP_USERNAME }}  # Your FTP username (from GitHub secrets)
+          password: ${{ secrets.FTP_PASSWORD }}  # Your FTP password (from GitHub secrets)
           local-dir: './'                        # Local directory of your project
           server-dir: '/htdocs'                  # Remote directory on your server (e.g., XAMPP's 'htdocs')
