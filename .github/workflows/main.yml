@@ -18,9 +18,9 @@ jobs:
     - name: Deploy to XAMPP via FTP
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
       with:
-        server: ${{ secrets.FTP_HOST }} # FTP server (e.g., 127.0.0.1 or your public IP)
+        server: ${{ secrets.FTP_HOST }} # FTP server (e.g., 127.0.0.1 or public IP)
         username: ${{ secrets.FTP_USERNAME }} # FTP username
         password: ${{ secrets.FTP_PASSWORD }} # FTP password
         local-dir: "./" # Path to project files (default: current directory)
-        server-dir: "/path/to/xampp/htdocs" # Target directory on your XAMPP server
+        server-dir: "/path/to/xampp/htdocs/" # Ensure this ends with a forward slash!
         protocol: "ftp" # Protocol to use (ftp, ftps, sftp)
