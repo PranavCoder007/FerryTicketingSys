@@ -17,12 +17,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Step 2: FTP Deployment
+      # Step 2: FTP Deploy
       - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.0
         with:
-          server: '127.0.0.1'                    # Use 'localhost' or '127.0.0.1' for local access
-          username: ${{ secrets.FTP_USERNAME }}  # Your FTP username (from GitHub secrets)
-          password: ${{ secrets.FTP_PASSWORD }}  # Your FTP password (from GitHub secrets)
-          local-dir: './'                        # Local directory of your project
-          server-dir: '/htdocs/'                 # Ensure the server directory ends with '/'
+          server: '127.0.0.1:14147'               # Correct FTP server address and port
+          username: ${{ secrets.FTP_USERNAME }}   # Add FTP username in GitHub secrets
+          password: ${{ secrets.FTP_PASSWORD }}   # Add FTP password in GitHub secrets
+          local-dir: './'                         # Directory of your project
+          server-dir: '/htdocs/'                  # Remote directory (htdocs in your case)
