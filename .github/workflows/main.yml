@@ -1,26 +1,37 @@
-name: CI/CD for XAMPP via FTP
+name: Deploy to XAMPP FTP Server
 
 on:
   push:
     branches:
-      - main
+      - main   # Trigger on push to the main branch
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest   # Runs on Ubuntu virtual machine
 
     steps:
-    # Step 1: Checkout Code
-    - name: Checkout Code
+    # Step 1: Checkout the code from the repository
+    - name: Checkout code
       uses: actions/checkout@v3
 
-    # Step 2: Deploy via FTP
-    - name: Deploy to XAMPP via FTP
+    # Step 2: Setup FTP deploy action
+    - name: FTP Deploy
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
       with:
-        server: ${{ secrets.FTP_HOST }} # FTP server (e.g., 127.0.0.1 or public IP)
-        username: ${{ secrets.FTP_USERNAME }} # FTP username
-        password: ${{ secrets.FTP_PASSWORD }} # FTP password
-        local-dir: "./" # Path to project files (default: current directory)
-        server-dir: "/path/to/xampp/htdocs/" # Ensure this ends with a forward slash!
-        protocol: "ftp" # Protocol to use (ftp, ftps, sftp)
+        server: ${{ secrets.FTP_HOST }}  # FTP server IP or domain
+        username: ${{ secrets.FTP_USER }}  # FTP username
+        password: ${{ secrets.FTP_PASSWORD }}  # FTP password
+        port: 21   # FTP port (can be 21 or whatever your FTP server is using)
+        protocol: ftp  # FTP protocol
+        local-dir: ./   # Local directory to deploy (can be './' for root project folder)
+        server-dir: /path/to/your/htdocs/  # Directory on your XAMPP FTP server
+        # Optional: Uncomment if you want to use passive FTP mode
+        # passive: true
+
+    # Step 3: (Optional) Clear out the server files before deploying (use carefully)
+    # - name: Clean up old files
+    #   run: ssh -o StrictHostKeyChecking=no ${{ secrets.FTP_USER }}@${{ secrets.FTP_HOST }} "rm -rf /path/to/your/htdocs/*"
+
+    # Step 4: Confirm deployment success
+    - name: Deployment Success
+      run: echo "Deployment completed successfully!"
