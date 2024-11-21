@@ -25,4 +25,4 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}  # Your FTP username (from GitHub secrets)
           password: ${{ secrets.FTP_PASSWORD }}  # Your FTP password (from GitHub secrets)
           local-dir: './'                        # Local directory of your project
-          server-dir: '/htdocs'                  # Remote directory on your server (e.g., XAMPP's 'htdocs')
+          server-dir: '/htdocs/'                 # Ensure the server directory ends with '/'
