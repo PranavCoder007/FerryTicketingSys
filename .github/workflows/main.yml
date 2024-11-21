@@ -2,40 +2,35 @@ name: Deploy to XAMPP FTP Server
 on:
   push:
     branches:
-      - main   # Trigger on push to the main branch
+      - main
 jobs:
   deploy:
-    runs-on: ubuntu-latest   # Runs on Ubuntu virtual machine
+    runs-on: ubuntu-latest
     steps:
-    # Step 1: Checkout the code from the repository
     - name: Checkout code
       uses: actions/checkout@v3
-      with:
-        fetch-depth: 2  # Fetch last 2 commits for efficient deployment
 
-    # Step 2: Setup FTP deploy action with enhanced configuration
     - name: FTP Deploy
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
       with:
-        server: ${{ secrets.FTP_HOST }}  # FTP server IP or domain
-        username: ${{ secrets.FTP_USERNAME }}  # FTP username
-        password: ${{ secrets.FTP_PASSWORD }}  # FTP password
-        port: 21   # FTP port
+        server: ${{ secrets.FTP_HOST }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        port: 21
         protocol: ftp
-        local-dir: ./   # Local directory to deploy
-        server-dir: /path/to/your/htdocs/  # Directory on XAMPP FTP server
-        
-        # Enhanced timeout and retry configurations
-        timeout: 120000  # 2-minute timeout (in milliseconds)
-        max-retries: 3   # Retry up to 3 times
-        passive: true    # Use passive FTP mode
-        log-level: detailed  # Verbose logging for troubleshooting
+        local-dir: ./
+        server-dir: /path/to/your/htdocs/
+        log-level: verbose
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          **/.env
 
-    # Step 3: Deployment success confirmation
-    - name: Deployment Success
+    - name: Deployment Status
+      if: success()
       run: echo "Deployment completed successfully!"
 
-    # Step 4: Error handling
-    - name: Deployment Failure Notification
+    - name: Deployment Failure
       if: failure()
-      run: echo "Deployment failed. Check logs for details."
+      run: echo "Deployment failed. Check workflow logs for details."
