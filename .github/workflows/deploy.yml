@@ -14,25 +14,29 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Step 2: Run JavaScript Linter (ESLint)
+      # Step 2: Install ESLint 8.x.x (without eslint.config.js)
+      - name: Install ESLint 8.x.x
+        run: |
+          npm install eslint@8  # Install ESLint version 8
+
+      # Step 3: Run JavaScript Linter (ESLint)
       - name: Run JavaScript Linter (ESLint)
         run: |
-          npm install -g eslint  # Install ESLint globally if needed
-          eslint .  # Lint all files according to eslint.config.js
+          eslint .  # Lint all files according to your existing .eslintrc.js
 
-      # Step 3: Run PHP Code Sniffer (Optional, if you want to check PHP code quality)
+      # Step 4: Run PHP Code Sniffer (Optional, if you want to check PHP code quality)
       - name: Run PHP Code Sniffer
         run: |
           sudo apt-get install php-pear php-dev  # Install PHP dependencies
           sudo pear install PHP_CodeSniffer  # Install PHP_CodeSniffer
           phpcs --standard=PSR12 .  # Run PHP CodeSniffer on the project
 
-      # Step 4: Archive Project Files
+      # Step 5: Archive Project Files
       - name: Archive Project Files
         run: |
           zip -r project.zip . -x "*.git*" -x ".github/*" -x "node_modules/*"
 
-      # Step 5: Deploy to XAMPP Server (HTTP via ngrok)
+      # Step 6: Deploy to XAMPP Server (HTTP via ngrok)
       - name: Deploy to XAMPP Server
         run: |
           echo "Starting Deployment..."
