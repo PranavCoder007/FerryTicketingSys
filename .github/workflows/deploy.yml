@@ -1,58 +1,66 @@
-name: CI/CD Pipeline for JavaScript and PHP Project
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
-      - main  # Trigger on pushes to the main branch
+      - main # Run CI/CD on push to the main branch
 
 jobs:
-  ci_cd:
-    runs-on: ubuntu-latest  # Run on the latest Ubuntu runner
+  # Continuous Integration
+  build-and-test:
+    runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the latest code
-      - name: Checkout Code
-        uses: actions/checkout@v3
+    # Step 1: Checkout code
+    - name: Checkout Code
+      uses: actions/checkout@v3
 
-      # Step 2: Set up Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'  # Set Node.js version
+    # Step 2: Setup PHP environment
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.1 # You can specify your PHP version
+        extensions: mbstring, pdo, tokenizer, xml
+        coverage: none
 
-      # Step 3: Install Dependencies (including ESLint)
-      - name: Install Dependencies
-        run: |
-          npm install  # Install all dependencies including ESLint
+    # Step 3: Run PHP lint
+    - name: PHP Lint Check
+      run: |
+        find . -name "*.php" -exec php -l {} \;
 
-      # Step 4: Fix Permissions for Node Modules
-      - name: Fix Permissions for node_modules
-        run: |
-          sudo chmod -R 777 ./node_modules  # Adjust permissions for the node_modules directory
+    # Step 4: Setup Node.js (optional if JavaScript tools are required)
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18' # Use the latest stable version
 
-      # Step 5: Run JavaScript Linter (ESLint)
-      - name: Run JavaScript Linter (ESLint)
-        run: |
-          npx eslint .  # Use npx to run ESLint locally
+    # Step 5: Run JavaScript linting
+    - name: Lint JavaScript Files
+      run: |
+        npm install -g eslint
+        eslint "**/*.js"
 
-      # Step 6: Run PHP Code Sniffer (Optional, if you want to check PHP code quality)
-      - name: Run PHP Code Sniffer
-        run: |
-          sudo apt-get install php-pear php-dev  # Install PHP dependencies
-          sudo pear install PHP_CodeSniffer  # Install PHP_CodeSniffer
-          phpcs --standard=PSR12 .  # Run PHP CodeSniffer on the project
+  # Continuous Deployment
+  deploy:
+    needs: build-and-test # Ensure CI passes before deployment
+    runs-on: ubuntu-latest
 
-      # Step 7: Archive Project Files
-      - name: Archive Project Files
-        run: |
-          zip -r project.zip . -x "*.git*" -x ".github/*" -x "node_modules/*"
+    steps:
+    # Step 1: Checkout the latest code
+    - name: Checkout Code
+      uses: actions/checkout@v3
 
-      # Step 8: Deploy to XAMPP Server (HTTP via ngrok)
-      - name: Deploy to XAMPP Server
-        run: |
-          echo "Starting Deployment..."
-          curl -X POST \
-            -H "Authorization: Bearer ${{ secrets.DEPLOY_TOKEN }}" \
-            -F "project=@project.zip" \
-            http://abcd1234.ngrok.io/api/deploy-endpoint.php
-          echo "Deployment Complete!"
+    # Step 2: Zip the project files
+    - name: Archive Project Files
+      run: |
+        zip -r project.zip . -x "*.git*" -x ".github/*" -x "node_modules/*"
+
+    # Step 3: Deploy to XAMPP Server
+    - name: Deploy to XAMPP Server
+      run: |
+        echo "Starting Deployment..."
+        curl -X POST \
+          -H "Authorization: Bearer ${{ secrets.DEPLOY_TOKEN }}" \
+          -F "project=@project.zip" \
+          http://abcd1234.ngrok.io/api/deploy-endpoint.php
+        echo "Deployment Complete!"
