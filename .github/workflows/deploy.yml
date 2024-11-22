@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main # Run CI/CD on push to the main branch
+      - main # Trigger on pushes to the main branch
 
 jobs:
   build-and-test:
@@ -14,53 +14,18 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    # Step 2: Setup PHP environment
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: 8.1 # Specify your PHP version
-        extensions: mbstring, pdo, tokenizer, xml
-        coverage: none
-
-    # Step 3: Run PHP lint
-    - name: PHP Lint Check
-      run: |
-        find . -name "*.php" -exec php -l {} \;
-
-    # Step 4: Setup Node.js
+    # Step 2: Setup Node.js
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '18' # Use the latest stable version
 
-    # Step 5: Install ESLint
+    # Step 3: Install ESLint
     - name: Install ESLint
       run: |
         npm install -g eslint
 
-    # Step 6: Run ESLint
+    # Step 4: Run ESLint
     - name: Lint JavaScript Files
       run: |
         eslint "**/*.js" --config build/npm/.eslintrc.js
-
-  deploy:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-
-    steps:
-    # Step 1: Checkout the latest code
-    - name: Checkout Code
-      uses: actions/checkout@v3
-
-    # Step 2: Zip the project files
-    - name: Archive Project Files
-      run: |
-        zip -r project.zip . -x "*.git*" -x ".github/*" -x "node_modules/*"
-
-    # Step 3: Deploy to XAMPP Server
-    - name: Deploy to XAMPP Server
-      run: |
-        curl -X POST \
-          -H "Authorization: Bearer ${{ secrets.DEPLOY_TOKEN }}" \
-          -F "project=@project.zip" \
-          http://abcd1234.ngrok.io/api/deploy-endpoint.php
