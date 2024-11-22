@@ -14,11 +14,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Step 2: Lint the JavaScript code (Optional, if you want to check JS quality)
+      # Step 2: Run JavaScript Linter (ESLint)
       - name: Run JavaScript Linter (ESLint)
         run: |
           npm install -g eslint  # Install ESLint globally if needed
-          eslint . --ext .js,.jsx  # Lint all JavaScript files
+          eslint .  # Lint all files according to eslint.config.js
 
       # Step 3: Run PHP Code Sniffer (Optional, if you want to check PHP code quality)
       - name: Run PHP Code Sniffer
