@@ -19,7 +19,7 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: 8.1 # You can specify your PHP version
+        php-version: 8.1 # Specify your PHP version
         extensions: mbstring, pdo, tokenizer, xml
         coverage: none
 
@@ -28,7 +28,7 @@ jobs:
       run: |
         find . -name "*.php" -exec php -l {} \;
 
-    # Step 4: Setup Node.js (optional if JavaScript tools are required)
+    # Step 4: Setup Node.js
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
@@ -37,7 +37,14 @@ jobs:
     # Step 5: Run JavaScript linting
     - name: Lint JavaScript Files
       run: |
+        # Generate ESLint configuration file if not present
+        if [ ! -f eslint.config.js ]; then
+          echo "Creating default ESLint configuration..."
+          echo "export default { 'root': true, 'env': { 'browser': true, 'es2021': true }, 'extends': 'eslint:recommended', 'parserOptions': { 'ecmaVersion': 12 }, 'rules': {} };" > eslint.config.js
+        fi
+        # Install ESLint globally
         npm install -g eslint
+        # Run ESLint on all JavaScript files
         eslint "**/*.js"
 
   # Continuous Deployment
