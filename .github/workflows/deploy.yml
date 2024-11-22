@@ -25,24 +25,29 @@ jobs:
         run: |
           npm install  # Install all dependencies including ESLint
 
-      # Step 4: Run JavaScript Linter (ESLint)
+      # Step 4: Fix Permissions for Node Modules
+      - name: Fix Permissions for node_modules
+        run: |
+          sudo chmod -R 777 ./node_modules  # Adjust permissions for the node_modules directory
+
+      # Step 5: Run JavaScript Linter (ESLint)
       - name: Run JavaScript Linter (ESLint)
         run: |
           npx eslint .  # Use npx to run ESLint locally
 
-      # Step 5: Run PHP Code Sniffer (Optional, if you want to check PHP code quality)
+      # Step 6: Run PHP Code Sniffer (Optional, if you want to check PHP code quality)
       - name: Run PHP Code Sniffer
         run: |
           sudo apt-get install php-pear php-dev  # Install PHP dependencies
           sudo pear install PHP_CodeSniffer  # Install PHP_CodeSniffer
           phpcs --standard=PSR12 .  # Run PHP CodeSniffer on the project
 
-      # Step 6: Archive Project Files
+      # Step 7: Archive Project Files
       - name: Archive Project Files
         run: |
           zip -r project.zip . -x "*.git*" -x ".github/*" -x "node_modules/*"
 
-      # Step 7: Deploy to XAMPP Server (HTTP via ngrok)
+      # Step 8: Deploy to XAMPP Server (HTTP via ngrok)
       - name: Deploy to XAMPP Server
         run: |
           echo "Starting Deployment..."
