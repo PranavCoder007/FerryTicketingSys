@@ -38,14 +38,14 @@ jobs:
     - name: Lint JavaScript Files
       run: |
         # Generate ESLint configuration file if not present
-        if [ ! -f eslint.config.js ]; then
+        if [ ! -f eslint.config.cjs ]; then
           echo "Creating ESLint configuration..."
-          echo "export default { env: { browser: true, es2021: true }, extends: ['eslint:recommended'], parserOptions: { ecmaVersion: 12 }, rules: {} };" > eslint.config.js
+          echo "module.exports = { env: { browser: true, es2021: true }, extends: ['eslint:recommended'], parserOptions: { ecmaVersion: 12 }, rules: {} };" > eslint.config.cjs
         fi
         # Install ESLint globally
         npm install -g eslint
         # Run ESLint on all JavaScript files
-        eslint -c eslint.config.js "**/*.js"
+        eslint -c eslint.config.cjs "**/*.js"
 
   # Continuous Deployment
   deploy:
