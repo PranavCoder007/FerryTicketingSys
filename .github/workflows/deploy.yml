@@ -1,0 +1,30 @@
+name: Deploy to XAMPP Server
+
+on:
+  push:
+    branches:
+      - main # Trigger on pushes to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout the latest code
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    # Step 2: Zip the project files
+    - name: Archive Project Files
+      run: |
+        zip -r project.zip . -x "*.git*" -x ".github/*" -x "node_modules/*"
+
+    # Step 3: Deploy to XAMPP Server
+    - name: Deploy to XAMPP Server
+      run: |
+        echo "Starting Deployment..."
+        curl -X POST \
+          -H "Authorization: Bearer ${{ secrets.DEPLOY_TOKEN }}" \
+          -F "project=@project.zip" \
+          http://localhost/api/deploy-endpoint.php
+        echo "Deployment Complete!"
