@@ -1,30 +1,43 @@
-name: Deploy to XAMPP Server
+name: CI/CD Pipeline for JavaScript and PHP Project
 
 on:
   push:
     branches:
-      - main # Trigger on pushes to the main branch
+      - main  # Trigger on pushes to the main branch
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  ci_cd:
+    runs-on: ubuntu-latest  # Run on the latest Ubuntu runner
 
     steps:
-    # Step 1: Checkout the latest code
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      # Step 1: Checkout the latest code
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    # Step 2: Zip the project files
-    - name: Archive Project Files
-      run: |
-        zip -r project.zip . -x "*.git*" -x ".github/*" -x "node_modules/*"
+      # Step 2: Lint the JavaScript code (Optional, if you want to check JS quality)
+      - name: Run JavaScript Linter (ESLint)
+        run: |
+          npm install -g eslint  # Install ESLint globally if needed
+          eslint . --ext .js,.jsx  # Lint all JavaScript files
 
-    # Step 3: Deploy to XAMPP Server
-    - name: Deploy to XAMPP Server
-      run: |
-        echo "Starting Deployment..."
-        curl -X POST \
-          -H "Authorization: Bearer ${{ secrets.DEPLOY_TOKEN }}" \
-          -F "project=@project.zip" \
-          http://abcd1234.ngrok.io/api/deploy-endpoint.php
-        echo "Deployment Complete!"
+      # Step 3: Run PHP Code Sniffer (Optional, if you want to check PHP code quality)
+      - name: Run PHP Code Sniffer
+        run: |
+          sudo apt-get install php-pear php-dev  # Install PHP dependencies
+          sudo pear install PHP_CodeSniffer  # Install PHP_CodeSniffer
+          phpcs --standard=PSR12 .  # Run PHP CodeSniffer on the project
+
+      # Step 4: Archive Project Files
+      - name: Archive Project Files
+        run: |
+          zip -r project.zip . -x "*.git*" -x ".github/*" -x "node_modules/*"
+
+      # Step 5: Deploy to XAMPP Server (HTTP via ngrok)
+      - name: Deploy to XAMPP Server
+        run: |
+          echo "Starting Deployment..."
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.DEPLOY_TOKEN }}" \
+            -F "project=@project.zip" \
+            http://abcd1234.ngrok.io/api/deploy-endpoint.php
+          echo "Deployment Complete!"
