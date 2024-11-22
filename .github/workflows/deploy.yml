@@ -6,7 +6,6 @@ on:
       - main # Run CI/CD on push to the main branch
 
 jobs:
-  # Continuous Integration
   build-and-test:
     runs-on: ubuntu-latest
 
@@ -42,11 +41,10 @@ jobs:
     # Step 6: Run ESLint
     - name: Lint JavaScript Files
       run: |
-        eslint "**/*.js" --config build/npm/.eslintrc.json
+        eslint "**/*.js" --config build/npm/.eslintrc.js
 
-  # Continuous Deployment
   deploy:
-    needs: build-and-test # Ensure CI passes before deployment
+    needs: build-and-test
     runs-on: ubuntu-latest
 
     steps:
@@ -62,9 +60,7 @@ jobs:
     # Step 3: Deploy to XAMPP Server
     - name: Deploy to XAMPP Server
       run: |
-        echo "Starting Deployment..."
         curl -X POST \
           -H "Authorization: Bearer ${{ secrets.DEPLOY_TOKEN }}" \
           -F "project=@project.zip" \
           http://abcd1234.ngrok.io/api/deploy-endpoint.php
-        echo "Deployment Complete!"
