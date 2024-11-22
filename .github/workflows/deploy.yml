@@ -26,5 +26,5 @@ jobs:
         curl -X POST \
           -H "Authorization: Bearer ${{ secrets.DEPLOY_TOKEN }}" \
           -F "project=@project.zip" \
-          http://localhost/api/deploy-endpoint.php
+          http://abcd1234.ngrok.io/api/deploy-endpoint.php
         echo "Deployment Complete!"
